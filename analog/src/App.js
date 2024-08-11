@@ -45,7 +45,7 @@ function App() {
 
   return (
     <div style={containerStyle}>
-      <h1 style={headerStyle}>Timegraph Data</h1>
+      <h1 style={headerStyle}>Analog - Query a Unique View</h1>
 
       <form onSubmit={handleSubmit} style={formStyle}>
         <div style={inputContainerStyle}>
@@ -139,7 +139,7 @@ const inputStyle = {
 const buttonStyle = {
   padding: "10px 15px",
   borderRadius: "4px",
-  backgroundColor: "#007bff",
+  backgroundColor: "#679b40",
   color: "white",
   border: "none",
   cursor: "pointer",
