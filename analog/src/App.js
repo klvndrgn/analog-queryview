@@ -5,7 +5,13 @@ import { web3Enable } from "@polkadot/extension-dapp";
 const sessionKey = "your_session_key"; // replace your_session_key with your session key
 const timegraphGraphqlUrl = "https://timegraph.testnet.analog.one/graphql";
 
-async function watchSDKTesting(setData, setAliasResponse, name, hashId) {
+async function watchSDKTesting(
+  setData,
+  setAliasResponse,
+  name,
+  hashId,
+  sponsorView
+) {
   await web3Enable("abcd");
 
   const client = new TimegraphClient({
@@ -30,6 +36,13 @@ async function watchSDKTesting(setData, setAliasResponse, name, hashId) {
   });
 
   setData(data);
+
+  const fund = await client.tokenomics.sponsorView({
+    viewName: name,
+    amount: "2000000000",
+  });
+
+  sponsorView(fund);
 }
 
 function App() {
@@ -37,137 +50,142 @@ function App() {
   const [aliasResponse, setAliasResponse] = useState(null);
   const [name, setName] = useState("");
   const [hashId, setHashId] = useState("");
+  const [fund, sponsorView] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    watchSDKTesting(setData, setAliasResponse, name, hashId);
+    watchSDKTesting(setData, setAliasResponse, name, hashId, sponsorView, fund);
   };
 
   return (
-    <div style={containerStyle}>
-      <h1 style={headerStyle}>Analog - Query a Unique View</h1>
+    <div style={styles.container}>
+      <h1 style={styles.header}>Analog - Query & Fund Unique View</h1>
 
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <div style={inputContainerStyle}>
-          <label style={labelStyle}>
-            Name:
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>
+            View Name:
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              style={inputStyle}
+              style={styles.input}
             />
           </label>
         </div>
-        <div style={inputContainerStyle}>
-          <label style={labelStyle}>
-            Hash ID:
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>
+            View Hash ID:
             <input
               type="text"
               value={hashId}
               onChange={(e) => setHashId(e.target.value)}
               required
-              style={inputStyle}
+              style={styles.input}
             />
           </label>
         </div>
-        <button type="submit" style={buttonStyle}>
+        <button type="submit" style={styles.button}>
           Submit
         </button>
       </form>
 
       {aliasResponse && (
-        <div style={dataSectionStyle}>
-          <h2 style={subHeaderStyle}>Alias Response</h2>
-          <pre style={preStyle}>{JSON.stringify(aliasResponse, null, 2)}</pre>
+        <div style={styles.result}>
+          <h2 style={styles.subHeader}>Alias Response</h2>
+          <pre style={styles.pre}>{JSON.stringify(aliasResponse, null, 2)}</pre>
+        </div>
+      )}
+
+      {fund && (
+        <div style={styles.result}>
+          <h2 style={styles.subHeader}>Fund</h2>
+          <pre style={styles.pre}>{JSON.stringify(fund, null, 2)}</pre>
         </div>
       )}
 
       {data ? (
-        <div style={dataSectionStyle}>
-          <h2 style={subHeaderStyle}>Timegraph Data</h2>
-          <pre style={preStyle}>{JSON.stringify(data, null, 2)}</pre>
+        <div style={styles.result}>
+          <h2 style={styles.subHeader}>Timegraph Data</h2>
+          <pre style={styles.pre}>{JSON.stringify(data, null, 2)}</pre>
         </div>
       ) : (
-        <p style={loadingStyle}>Result will be displayed here</p>
+        <p style={styles.loadingText}>Loading data...</p>
       )}
     </div>
   );
 }
 
-const containerStyle = {
-  backgroundColor: "white",
-  padding: "20px",
-  borderRadius: "8px",
-  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  maxWidth: "600px",
-  margin: "auto",
-  textAlign: "center",
-};
-
-const headerStyle = {
-  color: "#333",
-  marginBottom: "20px",
-};
-
-const formStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "15px",
-};
-
-const inputContainerStyle = {
-  marginBottom: "10px",
-};
-
-const labelStyle = {
-  fontWeight: "bold",
-  color: "#555",
-  display: "block",
-  marginBottom: "5px",
-};
-
-const inputStyle = {
-  padding: "10px",
-  borderRadius: "4px",
-  border: "1px solid #ddd",
-  fontSize: "16px",
-  width: "100%",
-};
-
-const buttonStyle = {
-  padding: "10px 15px",
-  borderRadius: "4px",
-  backgroundColor: "#679b40",
-  color: "white",
-  border: "none",
-  cursor: "pointer",
-  fontSize: "16px",
-  transition: "background-color 0.3s ease",
-};
-
-const dataSectionStyle = {
-  marginTop: "20px",
-  textAlign: "left",
-};
-
-const subHeaderStyle = {
-  color: "#444",
-  marginBottom: "10px",
-};
-
-const preStyle = {
-  backgroundColor: "#f9f9f9",
-  padding: "15px",
-  borderRadius: "4px",
-  border: "1px solid #eee",
-  maxHeight: "200px",
-  overflowY: "auto",
-};
-
-const loadingStyle = {
-  color: "#777",
+const styles = {
+  container: {
+    fontFamily: "'Arial', sans-serif",
+    padding: "20px",
+    maxWidth: "600px",
+    margin: "auto",
+    backgroundColor: "#f7f7f7",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  },
+  header: {
+    color: "#333",
+    textAlign: "center",
+    marginBottom: "20px",
+  },
+  form: {
+    marginBottom: "20px",
+  },
+  inputGroup: {
+    marginBottom: "15px",
+  },
+  label: {
+    display: "block",
+    marginBottom: "5px",
+    color: "#555",
+  },
+  input: {
+    width: "100%",
+    padding: "8px",
+    borderRadius: "4px",
+    border: "1px solid #ddd",
+    fontSize: "16px",
+  },
+  button: {
+    display: "block",
+    width: "100%",
+    padding: "10px",
+    borderRadius: "4px",
+    backgroundColor: "#679b40",
+    color: "#fff",
+    fontSize: "16px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
+  },
+  buttonHover: {
+    backgroundColor: "#45a049",
+  },
+  result: {
+    marginBottom: "20px",
+    padding: "15px",
+    backgroundColor: "#e7f3fe",
+    borderRadius: "8px",
+    border: "1px solid #b3d4fc",
+  },
+  subHeader: {
+    color: "#333",
+    marginBottom: "10px",
+  },
+  pre: {
+    backgroundColor: "#f4f4f4",
+    padding: "10px",
+    borderRadius: "4px",
+    overflowX: "auto",
+  },
+  loadingText: {
+    textAlign: "center",
+    color: "#888",
+  },
 };
 
 export default App;
