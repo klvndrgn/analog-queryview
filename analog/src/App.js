@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TimegraphClient } from "@analog-labs/timegraph-js";
 import { web3Enable } from "@polkadot/extension-dapp";
+import logo from "./HCA.png";
 
 const sessionKey = "your_session_key"; // replace your_session_key with your session key
 const timegraphGraphqlUrl = "https://timegraph.testnet.analog.one/graphql";
@@ -91,17 +92,17 @@ function App() {
         </button>
       </form>
 
-      {aliasResponse && (
-        <div style={styles.result}>
-          <h2 style={styles.subHeader}>Alias Response</h2>
-          <pre style={styles.pre}>{JSON.stringify(aliasResponse, null, 2)}</pre>
-        </div>
-      )}
-
       {fund && (
         <div style={styles.result}>
           <h2 style={styles.subHeader}>Fund</h2>
           <pre style={styles.pre}>{JSON.stringify(fund, null, 2)}</pre>
+        </div>
+      )}
+
+      {aliasResponse && (
+        <div style={styles.result}>
+          <h2 style={styles.subHeader}>Query Response</h2>
+          <pre style={styles.pre}>{JSON.stringify(aliasResponse, null, 2)}</pre>
         </div>
       )}
 
@@ -113,6 +114,20 @@ function App() {
       ) : (
         <p style={styles.loadingText}>Loading data...</p>
       )}
+
+      <footer style={styles.footer}>
+        <img src={logo} alt="Channel Logo" style={styles.logo} />
+        <a style={styles.link}>Created by HappyCuanAirdrop</a>
+        <br />
+        <a
+          href="https://t.me/HappyCuanAirdrop"
+          style={styles.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Join our Telegram Group
+        </a>
+      </footer>
     </div>
   );
 }
@@ -185,6 +200,25 @@ const styles = {
   loadingText: {
     textAlign: "center",
     color: "#888",
+  },
+  footer: {
+    textAlign: "center",
+    padding: "20px",
+    marginTop: "20px",
+    borderTop: "1px solid #ddd",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center", // Center content horizontally
+  },
+  logo: {
+    width: "300px", // Medium size for the logo
+    height: "auto", // Maintain aspect ratio
+    marginBottom: "10px", // Space between logo and link
+  },
+  link: {
+    color: "#679b40",
+    textDecoration: "none",
+    fontSize: "16px",
   },
 };
 
